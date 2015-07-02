@@ -22,17 +22,18 @@ func resourceGithubAddUserRecord() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-
+			// userKey is the token of the authenticated user
 			"userKey": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
 			},
-
+			// organizationKey is the token of the authenticated
+			// user that owner or admin of organization
 			"organizationKey": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
 			},
-
+			// role must be selected as member or admin in Membership struct
 			"role": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
@@ -43,7 +44,7 @@ func resourceGithubAddUserRecord() *schema.Resource {
 				Elem:     &schema.Schema{Type: schema.TypeString},
 				Required: true,
 			},
-
+			// organization is the name of the organization
 			"organization": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
