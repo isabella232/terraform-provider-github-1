@@ -38,12 +38,6 @@ func resourceGithubAddUserRecord() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-
-			"source_repos": &schema.Schema{
-				Type:     schema.TypeList,
-				Elem:     &schema.Schema{Type: schema.TypeString},
-				Required: true,
-			},
 			// organization is the name of the organization
 			"organization": &schema.Schema{
 				Type:     schema.TypeString,
@@ -203,7 +197,7 @@ func resourceGithubAddUserRecordDelete(d *schema.ResourceData, meta interface{})
 
 	// Removing a user from this list will remove them from all teams and
 	// they will no longer have any access to the organization’s repositories.
-	_, err = client.Organizations.RemoveMember(org, user)
+	_, err := client.Organizations.RemoveMember(org, user)
 	//
 	if err != nil {
 		logging.Error("err while removing github user from the organization: %s", err.Error())
