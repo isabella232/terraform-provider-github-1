@@ -1,18 +1,14 @@
-package github_adduser
+package githubprovider
 
-import (
-	"github.com/google/go-github/github"
-	"github.com/hashicorp/terraform/helper/schema"
-	"golang.org/x/oauth2"
-)
+import "github.com/hashicorp/terraform/helper/schema"
 
 // required field are here for adding a user to the organization
-func resourceGithubForkRecord() *schema.Resource {
+func resourceGithubFork() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceGithubForkRecordCreate,
-		// Read:   resourceGithubAddUserRecordRead,
-		// Update: resourceGithubAddUserRecordUpdate,
-		// Delete: resourceGithubAddUserRecordDelete,
+		Create: resourceGithubForkCreate,
+		// Read:   resourceGithubAddUserRead,
+		// Update: resourceGithubAddUserUpdate,
+		// Delete: resourceGithubAddUserDelete,
 
 		Schema: map[string]*schema.Schema{
 			"username": &schema.Schema{
@@ -56,31 +52,23 @@ func interfaceToStringSlice(s interface{}) []string {
 	for i := range slice {
 		sslice[i] = slice[i].(string)
 	}
+
 	return sslice
 }
 
-// resourceGithubForkRecordCreate forks the repos of the organization
-func resourceGithubForkRecordCreate(d *schema.ResourceData, meta interface{}) error {
-	// user := d.Get("username").(string)
-	userKey := d.Get("userKey").(string)
+// resourceGithubForkCreate forks the repos of the organization
+func resourceGithubForkCreate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*Clients).UserClient
+	// meta.(*github.Client)
 	org := d.Get("organization").(string)
-	repos := interfaceToStringSlice(d.Get("repos"))
 
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{
-			AccessToken: userKey,
-		},
-	)
-	tc := oauth2.NewClient(oauth2.NoContext, ts)
-	client := github.NewClient(tc)
-
-	for _, repo := range repos {
+	for _, repo := range interfaceToStringSlice(d.Get("repos")) {
 		// Creates a fork for the authenticated user.
 		_, _, err := client.Repositories.CreateFork(org, repo, nil)
 		if err != nil {
 			return err
 		}
 	}
-	return nil
 
+	return nil
 }
