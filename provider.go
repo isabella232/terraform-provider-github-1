@@ -1,4 +1,4 @@
-package github_adduser
+package githubprovider
 
 import (
 	"github.com/hashicorp/terraform/helper/schema"
@@ -9,12 +9,12 @@ import (
 func Provider() terraform.ResourceProvider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			"username": &schema.Schema{
-				Type:        schema.TypeString,
-				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("GITHUB_USERNAME", nil),
-				Description: "A registered Github username.",
-			},
+			// "username": &schema.Schema{
+			// 	Type:        schema.TypeString,
+			// 	Required:    true,
+			// 	DefaultFunc: schema.EnvDefaultFunc("GITHUB_USERNAME", nil),
+			// 	Description: "A registered Github username.",
+			// },
 
 			"userKey": &schema.Schema{
 				Type:        schema.TypeString,
@@ -32,7 +32,8 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
-			"github_adduser_record": resourceGithubAddUserRecord(),
+			"github_adduser": resourceGithubAddUser(),
+			"github_fork":    resourceGithubFork(),
 		},
 
 		ConfigureFunc: providerConfigure,
@@ -40,11 +41,10 @@ func Provider() terraform.ResourceProvider {
 }
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
-	config := Config{
-		Username:        d.Get("username").(string),
+	config := &Config{
 		UserKey:         d.Get("userKey").(string),
 		OrganizationKey: d.Get("organizationKey").(string),
 	}
 
-	return config.Client()
+	return config.Clients()
 }
