@@ -1,31 +1,46 @@
-package github_adduser
+package githubprovider
 
 import (
-	"log"
-
 	"golang.org/x/oauth2"
 
 	"github.com/google/go-github/github"
 )
 
 type Config struct {
-	Username        string
 	UserKey         string
 	OrganizationKey string
 }
 
-// Client() returns a new client for accessing cloudflare.
-func (c *Config) Client() (*github.Client, error) {
-	// client, err := github.NewClient(c.Username, c.UserKey)
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{
-			AccessToken: c.OrganizationKey,
-		},
+type Clients struct {
+	OrgClient  *github.Client
+	UserClient *github.Client
+}
+
+// Client returns  clients for accessing github.
+func (c *Config) Clients() (*Clients, error) {
+	orgClient := github.NewClient(
+		oauth2.NewClient(
+			oauth2.NoContext,
+			oauth2.StaticTokenSource(
+				&oauth2.Token{
+					AccessToken: c.OrganizationKey,
+				},
+			),
+		),
 	)
-	tc := oauth2.NewClient(oauth2.NoContext, ts)
-	client := github.NewClient(tc)
+	userClient := github.NewClient(
+		oauth2.NewClient(
+			oauth2.NoContext,
+			oauth2.StaticTokenSource(
+				&oauth2.Token{
+					AccessToken: c.UserKey,
+				},
+			),
+		),
+	)
+	return &Clients{
+		OrgClient:  orgClient,
+		UserClient: userClient,
+	}, nil
 
-	log.Printf("[INFO] Github Client configured for user: %s", c.Username)
-
-	return client, nil
 }
