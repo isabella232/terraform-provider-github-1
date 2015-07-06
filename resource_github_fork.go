@@ -45,6 +45,7 @@ func resourceGithubForkRecord() *schema.Resource {
 	}
 }
 
+// interfaceToStringSlice converts the interface to slice of string
 func interfaceToStringSlice(s interface{}) []string {
 	slice, ok := s.([]interface{})
 	if !ok {
@@ -74,6 +75,7 @@ func resourceGithubForkRecordCreate(d *schema.ResourceData, meta interface{}) er
 	client := github.NewClient(tc)
 
 	for _, repo := range repos {
+		// Creates a fork for the authenticated user.
 		_, _, err := client.Repositories.CreateFork(org, repo, nil)
 		if err != nil {
 			return err
