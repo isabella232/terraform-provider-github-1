@@ -6,23 +6,12 @@ import "github.com/hashicorp/terraform/helper/schema"
 func resourceGithubFork() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceGithubForkCreate,
-		// Read:   resourceGithubAddUserRead,
-		// Update: resourceGithubAddUserUpdate,
-		// Delete: resourceGithubAddUserDelete,
+		Read:   resourceGithubForkCreate,
+		Update: resourceGithubForkCreate,
+		Delete: resourceGithubForkCreate,
 
 		Schema: map[string]*schema.Schema{
 			"username": &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			// userKey is the token of the authenticated user
-			"userKey": &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			// organizationKey is the token of the authenticated
-			// user that owner or admin of organization
-			"organizationKey": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
 			},
