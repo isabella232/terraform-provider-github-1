@@ -22,6 +22,7 @@ func resourceGithubAddUser() *schema.Resource {
 			"role": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
+				Default:  "member",
 			},
 
 			"organization": &schema.Schema{
@@ -95,11 +96,7 @@ func resourceGithubAddUserCreate(d *schema.ResourceData, meta interface{}) error
 	}
 
 	active := "active"
-	role := "member"
-	if r, ok := d.GetOk("role"); ok {
-		re := r.(string)
-		role = re
-	}
+	role := d.Get("role").(string)
 
 	membership := &github.Membership{
 		// state should be active to add the user into organization
