@@ -11,6 +11,13 @@ type Config struct {
 	OrganizationKey string
 }
 
+// Clients are created for auth. client
+// OrgClient creates a new github client with authenticated owner of organization
+// UserClient refers user's client.
+//
+// In example: while adding a new member to organization.
+// OrgClient refers organization (owner of organization)
+// UserClient refers member
 type Clients struct {
 	OrgClient  *github.Client
 	UserClient *github.Client
