@@ -9,13 +9,6 @@ import (
 func Provider() terraform.ResourceProvider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			// "username": &schema.Schema{
-			// 	Type:        schema.TypeString,
-			// 	Required:    true,
-			// 	DefaultFunc: schema.EnvDefaultFunc("GITHUB_USERNAME", nil),
-			// 	Description: "A registered Github username.",
-			// },
-
 			"userKey": &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,

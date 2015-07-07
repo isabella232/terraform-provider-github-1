@@ -1,4 +1,4 @@
-package github_adduser
+package githubprovider
 
 import (
 	"os"
@@ -29,10 +29,6 @@ func TestProvider_impl(t *testing.T) {
 }
 
 func testAccPreCheck(t *testing.T) {
-	if v := os.Getenv("GITHUB_USERNAME"); v == "" {
-		t.Fatal("GITHUB_USERNAME must be set for acceptance tests")
-	}
-
 	if v := os.Getenv("GITHUB_USERKEY"); v == "" {
 		t.Fatal("GITHUB_USERKEY must be set for acceptance tests")
 	}
