@@ -10,9 +10,6 @@ import (
 )
 
 func TestAccGithubFork_Basic(t *testing.T) {
-	// var githubCli github.Client
-
-	// userKey := os.Getenv("GITHUB_USERKEY")
 
 	var providers []*schema.Provider
 	providerFactories := map[string]terraform.ResourceProviderFactory{
@@ -58,9 +55,7 @@ func testAccCheckGithubForkDestroy(s *terraform.State) error {
 
 func testAccCheckGithubForkExists(n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		rs, ok := s.RootModule().Resources[n]
-
-		fmt.Println("RS data -->", rs)
+		_, ok := s.RootModule().Resources[n]
 
 		if !ok {
 			return fmt.Errorf("Not found: %s, res: %#v", n, s.RootModule())
