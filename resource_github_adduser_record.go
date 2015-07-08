@@ -111,6 +111,14 @@ func resourceGithubAddUserCreate(d *schema.ResourceData, meta interface{}) error
 }
 
 func resourceGithubAddUserRead(d *schema.ResourceData, meta interface{}) error {
+	user := &github.User{}
+	org := &github.Organization{}
+	team := &github.Team{}
+
+	d.Set("username", user.Name)
+	d.Set("organization", org.Name)
+	d.Set("teams", team.Name)
+
 	return nil
 }
 
