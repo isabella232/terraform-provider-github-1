@@ -21,18 +21,22 @@ func resourceGithubAddUser() *schema.Resource {
 				Required: true,
 			},
 
+			// role is the required for the membership
+			// its value is member as default.
 			"role": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "member",
 			},
 
+			// repos is the repos that the organization has
 			"repos": &schema.Schema{
 				Type:     schema.TypeList,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 				Required: true,
 			},
 
+			// organization is the name of the organization
 			"organization": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
@@ -89,10 +93,10 @@ func GetTeamIDs(client *github.Client, org string, teamNames []string) ([]int, e
 // resourceGithubAddUserCreate adds the user to the organization & the teams
 func resourceGithubAddUserCreate(d *schema.ResourceData, meta interface{}) error {
 	clientOrg := meta.(*Clients).OrgClient
-	org := d.Get("organization").(string)
-	teamNames := interfaceToStringSlice(d.Get("teams"))
 
+	org := d.Get("organization").(string)
 	user := d.Get("username").(string)
+	teamNames := interfaceToStringSlice(d.Get("teams"))
 
 	teamIDs, err := GetTeamIDs(clientOrg, org, teamNames)
 
@@ -109,11 +113,14 @@ func resourceGithubAddUserCreate(d *schema.ResourceData, meta interface{}) error
 	membership := &github.Membership{
 		// state should be active to add the user into organization
 		State: &active,
-		Role:  &role,
+
+		// Role is the required for the membership
+		Role: &role,
 	}
 
 	client := meta.(*Clients).UserClient
 
+	// EditOrgMembership edits the membership for user in specified organization.
 	_, _, err = client.Organizations.EditOrgMembership(org, membership)
 	if err != nil {
 		return err
