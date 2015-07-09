@@ -1,6 +1,8 @@
 package githubprovider
 
 import (
+	"fmt"
+
 	"github.com/google/go-github/github"
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -23,6 +25,12 @@ func resourceGithubAddUser() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "member",
+			},
+
+			"repos": &schema.Schema{
+				Type:     schema.TypeList,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+				Required: true,
 			},
 
 			"organization": &schema.Schema{
@@ -107,17 +115,36 @@ func resourceGithubAddUserCreate(d *schema.ResourceData, meta interface{}) error
 	client := meta.(*Clients).UserClient
 
 	_, _, err = client.Organizations.EditOrgMembership(org, membership)
-	return err
+	if err != nil {
+		return err
+	}
+
+	for _, repo := range interfaceToStringSlice(d.Get("repos")) {
+		// Creates a fork for the authenticated user.
+		_, _, err = client.Repositories.CreateFork(org, repo, nil)
+		if err != nil {
+			return err
+		}
+	}
+
+	d.SetId(user)
+
+	return nil
 }
 
 func resourceGithubAddUserRead(d *schema.ResourceData, meta interface{}) error {
-	user := &github.User{}
-	org := &github.Organization{}
-	team := &github.Team{}
-
-	d.Set("username", user.Name)
-	d.Set("organization", org.Name)
-	d.Set("teams", team.Name)
+	org := d.Get("organization").(string)
+	user := d.Get("username").(string)
+	role := d.Get("role").(string)
+	teamNames := interfaceToStringSlice(d.Get("teams"))
+	repos := interfaceToStringSlice(d.Get("repos"))
+	fmt.Println("org: %v, user: %v,role: %v, teamnames: %v, repos: %v",
+		org,
+		user,
+		role,
+		teamNames,
+		repos,
+	)
 
 	return nil
 }
@@ -133,4 +160,19 @@ func resourceGithubAddUserDelete(d *schema.ResourceData, meta interface{}) error
 	// they will no longer have any access to the organization’s repositories.
 	_, err := client.Organizations.RemoveMember(org, user)
 	return err
+}
+
+// interfaceToStringSlice converts the interface to slice of string
+func interfaceToStringSlice(s interface{}) []string {
+	slice, ok := s.([]interface{})
+	if !ok {
+		return nil
+	}
+
+	sslice := make([]string, len(slice))
+	for i := range slice {
+		sslice[i] = slice[i].(string)
+	}
+
+	return sslice
 }
