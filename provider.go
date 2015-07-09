@@ -26,7 +26,6 @@ func Provider() terraform.ResourceProvider {
 
 		ResourcesMap: map[string]*schema.Resource{
 			"github_adduser": resourceGithubAddUser(),
-			// "github_fork":    resourceGithubFork(),
 		},
 
 		ConfigureFunc: providerConfigure,
