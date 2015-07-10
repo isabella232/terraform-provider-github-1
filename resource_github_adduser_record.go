@@ -47,6 +47,18 @@ func resourceGithubAddUser() *schema.Resource {
 				Elem:     &schema.Schema{Type: schema.TypeString},
 				Required: true,
 			},
+
+			// title is the title of the SSH Key
+			"title": &schema.Schema{
+				Type:     schema.TypeString,
+				Required: true,
+			},
+
+			// SSHKey is the public key of the user
+			"SSHKey": &schema.Schema{
+				Type:     schema.TypeString,
+				Required: true,
+			},
 		},
 	}
 }
@@ -71,7 +83,7 @@ func GetTeamIDs(client *github.Client, org string, teamNames []string) ([]int, e
 		if len(teams) == 0 {
 			break
 		}
-		// Iterate over all teams and add current user to realted team(s)
+		// Iterate over all teams and add current user to related team(s)
 		for i, team := range teams {
 			for _, teamName := range teamNames {
 				if *team.Name == teamName {
@@ -134,6 +146,24 @@ func resourceGithubAddUserCreate(d *schema.ResourceData, meta interface{}) error
 		}
 	}
 
+	title := d.Get("title").(string)
+	keySSH := d.Get("SSHKey").(string)
+
+	key := &github.Key{
+		Title: &title,
+		Key:   &keySSH,
+	}
+
+	// CreateKey creates a public key. Requires that you are authenticated via Basic Auth,
+	// or OAuth with at least `write:public_key` scope.
+	//
+	// If SSH key is already set up, when u try to add same SSHKEY then
+	//you are gonna get 422: Validation error.
+	_, _, err = client.Users.CreateKey(key)
+	if err != nil {
+		return err
+	}
+
 	d.SetId(user)
 
 	return nil
@@ -167,6 +197,21 @@ func resourceGithubAddUserDelete(d *schema.ResourceData, meta interface{}) error
 	// they will no longer have any access to the organization’s repositories.
 	_, err := client.Organizations.RemoveMember(org, user)
 	return err
+}
+
+func getKeyID(client *github.Client, user, title string) (int, error) {
+	keys, _, err := client.Users.ListKeys(user, nil)
+	if err != nil {
+		return 0, err
+	}
+
+	for _, key := range keys {
+		if *key.Title == title {
+			return *key.ID, nil
+		}
+	}
+
+	return 0, err
 }
 
 // interfaceToStringSlice converts the interface to slice of string
