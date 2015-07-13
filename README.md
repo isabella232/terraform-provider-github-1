@@ -2,27 +2,28 @@
 Github Provider for Terraform
 
 
-#For more information about terraform : https://github.com/hashicorp/terraform
+# For more information about terraform : https://github.com/hashicorp/terraform
 
 
-#This plugin for github provides the teams following features;
+This plugin for github provides the teams following features;
  - Adding the user into the organization
  - Forking the repos of the organization
  - Adding SSH Key of the user into the user account
 
 
-#Terraform basicly satisfy 4 function as; create, delete, read and update..
+Terraform basicly satisfy 4 function as; create, delete, read and update..
 
 
-#Following fields should be filled to use github plugin.
--Organization Key: should be given by owner of the organization
--User Key : User key is the auth. token for user 
--username: name of the github user 
--organization : name of the organization that user will join
--repos : repos that will be forked
--teams : teams are the teams of the organization that user will join
--title : title of the SSH Key
--SSH Key : requires to add the key into the user's account 
+# Following fields should be filled to use github plugin.
+
+- Organization Key: should be given by owner of the organization
+- User Key : User key is the auth. token for user 
+- username: name of the github user 
+- organization : name of the organization that user will join
+- repos : repos that will be forked
+- teams : teams are the teams of the organization that user will join
+- title : title of the SSH Key
+- SSH Key : requires to add the key into the user's account 
 
 
 ```
