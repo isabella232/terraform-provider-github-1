@@ -38,7 +38,7 @@ provider "github" {
 resource "github" "repo" {
   username = "mehmetalisavas"
   organization = "organizationName"
-  repos = ["organization", "organization2"]
+  repos = ["repo", "repo2"]
   teams = ["teams", "teams2"]
   title = "SSH Key Title"
   SSHKey = "ssh-rsa 
