@@ -11,7 +11,9 @@ This plugin for github provides the teams following features;
 Terraform basicly satisfy 4 function as; create, delete, read and update..
 
 
-# Following fields should be filled to use github plugin.
+# Usage
+
+Following fields should be filled to use github plugin.
 
 - Organization Key: should be given by owner of the organization
 - User Key : User key is the auth. token for user 
