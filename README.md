@@ -2,9 +2,6 @@
 Github Provider for Terraform
 
 
-# For more information about terraform : https://github.com/hashicorp/terraform
-
-
 This plugin for github provides the teams following features;
  - Adding the user into the organization
  - Forking the repos of the organization
@@ -45,3 +42,4 @@ resource "github" "repo" {
   AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIpNLTGK9Tjom/BWDSUGPl+nafzlHDTYW7hdI4yZ5ew18JH4JW9jbhUFrviQzM7xlELEVf4h9lFX5QVkbPppSwg0cda3Pbv7kOdJ/MTyBlWXFCR+HAo3FXRitBqxiX1nKhXpHAZsMciLq8V6RjsNAQwdsdMFvSlVK/7XAt3FaoJoAsncM1Q9x5+3V0Ww68/eIFmb1zuUFljQJKprrX88XypNDvjYNby6vw/Pb0rwert/EnmZ+AW4OZPnTPI89ZPmVMLuayrD2cE86Z/il8b+gw3r3+1nKatmIkjn2so1d01QraTlMqVSsbxNrRFi9wrf+M7Q"
 }
 ```
+For more information about terraform : https://github.com/hashicorp/terraform
