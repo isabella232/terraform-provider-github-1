@@ -1,6 +1,7 @@
 package githubprovider
 
 import (
+	"os"
 	"testing"
 
 	"github.com/google/go-github/github"
@@ -13,7 +14,7 @@ func TestGithubAddAndRemoveUser(t *testing.T) {
 			oauth2.NoContext,
 			oauth2.StaticTokenSource(
 				&oauth2.Token{
-					AccessToken: "9b503b26dc365370818612b271c5fca9bdcb3c20",
+					AccessToken: os.Getenv("GITHUB_ORG_ACCESS_TOKEN"),
 				},
 			),
 		),
@@ -23,7 +24,7 @@ func TestGithubAddAndRemoveUser(t *testing.T) {
 			oauth2.NoContext,
 			oauth2.StaticTokenSource(
 				&oauth2.Token{
-					AccessToken: "6194d5b2782a2bcf7adb8ec74f03f59541fecd4f",
+					AccessToken: os.Getenv("GITHUB_USER_ACCESS_TOKEN"),
 				},
 			),
 		),
