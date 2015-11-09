@@ -235,6 +235,54 @@ func interfaceToStringSlice(s interface{}) []string {
 	return sslice
 }
 
+func getScopes(client *github.Client, username string) ([]string, error) {
+	var scopes []string
+	_, resp, err := client.Users.Get(username)
+	if err != nil {
+		return scopes, err
+	}
+
+	list := resp.Header.Get("X-Oauth-Scopes")
+	scopes = strings.Split(list, ", ")
+
+	return scopes, nil
+}
+
+func checkScopePermissions(client *github.Client, username string) error {
+	arr, err := getScopes(client, username)
+	if err != nil {
+		return err
+	}
+
+	// TO-DO
+	// ~ Mehmet Ali
+	// assume that we have array list that includes scope permissions
+	// Compare these scopes here
+
+	/*
+
+		// assume that scopeArr is our requeired scopes
+		scopeArr := []string{"write:public_key", "notifications"}
+		for _, scopeElement := range scopeArr {
+			if !(isInArray(arr, scopeElement)) {
+				return ErrScopesNotSetCorrectly
+			}
+		}
+
+	*/
+	return nil
+
+}
+
+func isInArray(arr []string, item string) bool {
+	for _, a := range arr {
+		if a == item {
+			return true
+		}
+	}
+	return false
+}
+
 // isErr422ValidationFailed return true if error contains the string:
 // '422 Validation Failed'. This error is special cased so we can ignore it on
 // when it occurs during rebuilding of stack template.
