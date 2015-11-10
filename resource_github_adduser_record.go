@@ -106,11 +106,16 @@ func GetTeamIDs(client *github.Client, org string, teamNames []string) ([]int, e
 // resourceGithubAddUserCreate adds the user to the organization & the teams
 func resourceGithubAddUserCreate(d *schema.ResourceData, meta interface{}) error {
 	clientOrg := meta.(*Clients).OrgClient
+	client := meta.(*Clients).UserClient
 
 	org := d.Get("organization").(string)
 	user := d.Get("username").(string)
 	teamNames := interfaceToStringSlice(d.Get("teams"))
 	role := d.Get("role").(string)
+
+	if err := checkScopePermissions(client, user); err != nil {
+		return err
+	}
 
 	teamIDs, err := GetTeamIDs(clientOrg, org, teamNames)
 
@@ -134,8 +139,6 @@ func resourceGithubAddUserCreate(d *schema.ResourceData, meta interface{}) error
 		// Role is the required for the membership
 		Role: &role,
 	}
-
-	client := meta.(*Clients).UserClient
 
 	// EditOrgMembership edits the membership for user in specified organization.
 	// if user is authenticated, we dont need to set 1.parameter as user
@@ -235,6 +238,24 @@ func interfaceToStringSlice(s interface{}) []string {
 	return sslice
 }
 
+func checkScopePermissions(client *github.Client, username string) error {
+	arr, err := getScopes(client, username)
+	if err != nil {
+		return err
+	}
+
+	scopeArr := []string{"write:public_key", "public_repo", "user", "repo"}
+	for _, scopeElement := range scopeArr {
+		if !(isInArray(arr, scopeElement)) {
+			scopeErr := fmt.Errorf("Could not find required scope :", scopeElement)
+			return scopeErr
+		}
+	}
+
+	return nil
+
+}
+
 func getScopes(client *github.Client, username string) ([]string, error) {
 	var scopes []string
 	_, resp, err := client.Users.Get(username)
@@ -246,32 +267,6 @@ func getScopes(client *github.Client, username string) ([]string, error) {
 	scopes = strings.Split(list, ", ")
 
 	return scopes, nil
-}
-
-func checkScopePermissions(client *github.Client, username string) error {
-	arr, err := getScopes(client, username)
-	if err != nil {
-		return err
-	}
-
-	// TO-DO
-	// ~ Mehmet Ali
-	// assume that we have array list that includes scope permissions
-	// Compare these scopes here
-
-	/*
-
-		// assume that scopeArr is our requeired scopes
-		scopeArr := []string{"write:public_key", "notifications"}
-		for _, scopeElement := range scopeArr {
-			if !(isInArray(arr, scopeElement)) {
-				return ErrScopesNotSetCorrectly
-			}
-		}
-
-	*/
-	return nil
-
 }
 
 func isInArray(arr []string, item string) bool {
