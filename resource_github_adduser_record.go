@@ -122,6 +122,7 @@ func resourceGithubAddUserCreate(d *schema.ResourceData, meta interface{}) error
 	if err := checkScopePermissions(client, user); err != nil {
 		return err
 	}
+
 	if len(teamNames) == 0 {
 		return errors.New("team name is not defined")
 	}
@@ -191,10 +192,10 @@ func resourceGithubAddUserCreate(d *schema.ResourceData, meta interface{}) error
 	keySSH := d.Get("SSHKey").(string)
 
 	key := &github.Key{
-
 		Title: &title,
 		Key:   &keySSH,
 	}
+
 	// CreateKey creates a public key. Requires that you are authenticated via Basic Auth,
 	// or OAuth with at least `write:public_key` scope.
 	//
